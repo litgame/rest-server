@@ -1,5 +1,5 @@
-name: litgame_bpmn
-description: litgame-bpmn
+name: litgame_server
+description: litgame_server
 version: 0.0.1
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
