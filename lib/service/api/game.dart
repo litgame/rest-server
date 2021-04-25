@@ -97,8 +97,10 @@ class ApiGameService implements RestService {
     if (flow == null) throw 'Fatal error: null flow';
 
     flow.nextTurn();
-    return SuccessResponse(
-        // ignore: invalid_use_of_protected_member
-        {'gameId': validator.game.id, 'flowState': 'selectCard'});
+    return SuccessResponse({
+      'gameId': validator.game.id,
+      'playerId': flow.currentUser.id,
+      'flowState': 'selectCard'
+    });
   }
 }

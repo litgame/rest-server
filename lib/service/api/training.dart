@@ -77,6 +77,10 @@ class ApiTrainingService implements RestService {
     final card = flow.getCard();
     return SuccessResponse(
         // ignore: invalid_use_of_protected_member
-        {'gameId': validator.game.id, 'card': card.toJson()});
+        {
+          'gameId': validator.game.id,
+          'playerId': flow.currentUser.id,
+          'card': card.toJson()
+        });
   }
 }
