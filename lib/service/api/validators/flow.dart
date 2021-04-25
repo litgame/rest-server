@@ -21,9 +21,9 @@ class FlowValidator extends TriggeredByValidator {
       return error;
     }
 
-    if (game.state != GameState.game) {
+    if (game.state != GameState.game && game.state != GameState.training) {
       return ErrorResponse(
-          'The game must to be in "game" state. Current state is ${game.state.toString()}');
+          'The game must to be in "game" or "training" state. Current state is ${game.state.toString()}');
     }
 
     var flow;

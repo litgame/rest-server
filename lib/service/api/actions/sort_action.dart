@@ -71,6 +71,7 @@ class SortAction implements Action {
               'playerPosition': position,
             });
           }
+          counter++;
         }
       }
     }

@@ -4,7 +4,6 @@ import 'package:test/test.dart';
 import 'helpers.dart';
 
 void main() async {
-  parseInit();
   test("Training start without collection", () async {
     final game = await startTrainingWithThreePlayers(false);
 
@@ -48,7 +47,8 @@ void main() async {
           'triggeredBy': 'testUser-2',
         }.toJson());
 
-    expect(response.statusCode, equals(500));
+    expect(response.statusCode, equals(500),
+        reason: await response.readAsString());
 
     response = await testRequest('PUT', '/api/game/training/next',
         body: {
@@ -56,7 +56,8 @@ void main() async {
           'triggeredBy': 'testUser-1',
         }.toJson());
 
-    expect(response.statusCode, equals(200));
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
     expect(game.trainingFlow?.currentUser.id, 'testUser-2');
 
     game.stop();

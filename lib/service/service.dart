@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:litgame_bpmn/models/cards/card.dart';
 import 'package:litgame_bpmn/models/cards/card_collection.dart';
-import 'package:litgame_bpmn/models/game/user.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -53,7 +52,6 @@ class LitGameRestService {
         clientKey: _parseRestKey,
         debug: true,
         registeredSubClassMap: <String, ParseObjectConstructor>{
-          'LitUsers': () => LitUser.clone(),
           'Card': () => Card.clone(),
           'CardCollection': () => CardCollection.clone(),
         },

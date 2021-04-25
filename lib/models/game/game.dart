@@ -147,13 +147,11 @@ class LitGame {
     if (isPlayerPlaying(user)) {
       return false;
     }
-    user.currentGame = this;
     _players[user.id] = user;
     return true;
   }
 
   void removePlayer(LitUser user) {
-    user.currentGame = null;
     _players.remove(user.id);
     if (playersSorted.isNotEmpty) {
       final player =

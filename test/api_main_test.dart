@@ -250,7 +250,8 @@ void main() async {
           'targetUserId': 'testUser-3'
         }.toJson());
 
-    expect(response.statusCode, equals(500));
+    expect(response.statusCode, equals(500),
+        reason: await response.readAsString());
 
     response = await testRequest('PUT', '/api/game/sortPlayer',
         body: {
@@ -260,7 +261,8 @@ void main() async {
           'position': 1
         }.toJson());
 
-    expect(response.statusCode, equals(200));
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
 
     response = await testRequest('PUT', '/api/game/sortPlayer',
         body: {
@@ -270,7 +272,8 @@ void main() async {
           'position': 1
         }.toJson());
 
-    expect(response.statusCode, equals(200));
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
 
     response = await testRequest('PUT', '/api/game/sortPlayer',
         body: {
@@ -280,14 +283,15 @@ void main() async {
           'position': 1
         }.toJson());
 
-    expect(response.statusCode, equals(200));
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
     expect(game.playersSorted.length, 3);
     var sorted = game.playersSorted.first;
     expect(sorted.user.id, 'testUser-2');
     sorted = sorted.next as LinkedUser;
-    expect(sorted.user.id, 'testUser-3');
-    sorted = sorted.next as LinkedUser;
     expect(sorted.user.id, 'testUser-1');
+    sorted = sorted.next as LinkedUser;
+    expect(sorted.user.id, 'testUser-3');
     game.stop();
   });
 }

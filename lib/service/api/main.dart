@@ -172,11 +172,6 @@ class ApiMainService implements RestService {
       }
     });
 
-    var error = await validator.validate();
-    if (error != null) {
-      return error;
-    }
-
     final action = SortAction(validator);
     return action.run();
   }

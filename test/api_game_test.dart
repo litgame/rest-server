@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:litgame_bpmn/models/cards/card.dart';
 import 'package:litgame_bpmn/service/helpers.dart';
+import 'package:litgame_bpmn/service/service.dart';
 import 'package:test/test.dart';
 
 import 'helpers.dart';
 
 void main() async {
-  parseInit();
+  final service = LitGameRestService();
+  await service.init;
   test("Game start", () async {
     final game = await startTrainingWithThreePlayers();
 
