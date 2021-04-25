@@ -36,8 +36,12 @@ class ApiMainService implements RestService {
       'gameId': (value, _) => value.toString().isNotEmpty
           ? null
           : "can't start game without an id!",
-      'adminId': (value, _) =>
-          value.toString().isNotEmpty ? null : "can't start game without admin!"
+      'adminId': (value, _) {
+        if (value.toString().isEmpty) return "can't start game without admin!";
+        if (LitGame.findGameOfPlayer(int.parse(value.toString())) != null) {
+          return "can't start new game while playing an existing one";
+        }
+      }
     });
     final error = await validator.validate();
     if (error != null) {
@@ -165,7 +169,7 @@ class ApiMainService implements RestService {
           return "Can't sort player without 'position' field";
         }
         try {
-          final position = int.parse(value.toString());
+          int.parse(value.toString());
         } catch (error) {
           return 'Cant parse position value: ' + error.toString();
         }
