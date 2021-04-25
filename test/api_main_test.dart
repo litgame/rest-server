@@ -1,6 +1,6 @@
-import 'package:litgame_bpmn/models/game/game.dart';
-import 'package:litgame_bpmn/models/game/user.dart';
-import 'package:litgame_bpmn/service/helpers.dart';
+import 'package:litgame_server/models/game/game.dart';
+import 'package:litgame_server/models/game/user.dart';
+import 'package:litgame_server/service/helpers.dart';
 import 'package:test/test.dart';
 
 import 'helpers.dart';

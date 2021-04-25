@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:litgame_bpmn/models/cards/card.dart';
-import 'package:litgame_bpmn/models/cards/card_collection.dart';
+import 'package:litgame_server/models/cards/card.dart';
+import 'package:litgame_server/models/cards/card_collection.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';

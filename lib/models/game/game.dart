@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:litgame_bpmn/models/cards/card.dart';
-import 'package:litgame_bpmn/models/game/game_flow.dart';
-import 'package:litgame_bpmn/models/game/traning_flow.dart';
+import 'package:litgame_server/models/cards/card.dart';
+import 'package:litgame_server/models/game/game_flow.dart';
+import 'package:litgame_server/models/game/traning_flow.dart';
 
 import 'user.dart';
 

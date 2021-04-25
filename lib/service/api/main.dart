@@ -1,9 +1,9 @@
-import 'package:litgame_bpmn/models/game/game.dart';
-import 'package:litgame_bpmn/models/game/user.dart';
-import 'package:litgame_bpmn/service/api/actions/kick_action.dart';
-import 'package:litgame_bpmn/service/api/actions/sort_action.dart';
-import 'package:litgame_bpmn/service/api/training.dart';
-import 'package:litgame_bpmn/service/service.dart';
+import 'package:litgame_server/models/game/game.dart';
+import 'package:litgame_server/models/game/user.dart';
+import 'package:litgame_server/service/api/actions/kick_action.dart';
+import 'package:litgame_server/service/api/actions/sort_action.dart';
+import 'package:litgame_server/service/api/training.dart';
+import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 

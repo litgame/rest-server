@@ -1,6 +1,6 @@
-import 'package:litgame_bpmn/models/game/game.dart';
-import 'package:litgame_bpmn/service/api/validators/triggered_by.dart';
-import 'package:litgame_bpmn/service/helpers.dart';
+import 'package:litgame_server/models/game/game.dart';
+import 'package:litgame_server/service/api/validators/triggered_by.dart';
+import 'package:litgame_server/service/helpers.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/src/router.dart';
 

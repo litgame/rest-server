@@ -1,4 +1,4 @@
-import 'package:litgame_bpmn/models/game/game.dart';
+import 'package:litgame_server/models/game/game.dart';
 import 'package:shelf/shelf.dart';
 
 import '../../helpers.dart';

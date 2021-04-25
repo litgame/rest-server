@@ -1,4 +1,4 @@
-import 'package:litgame_bpmn/service/api/validators/triggered_by.dart';
+import 'package:litgame_server/service/api/validators/triggered_by.dart';
 import 'package:shelf/shelf.dart';
 
 import '../../helpers.dart';

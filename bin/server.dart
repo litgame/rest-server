@@ -1,4 +1,4 @@
-import 'package:litgame_bpmn/service/service.dart';
+import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
 void main() async {

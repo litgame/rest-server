@@ -1,8 +1,8 @@
-import 'package:litgame_bpmn/models/cards/card.dart';
-import 'package:litgame_bpmn/models/game/game.dart';
-import 'package:litgame_bpmn/models/game/user.dart';
-import 'package:litgame_bpmn/service/helpers.dart';
-import 'package:litgame_bpmn/service/service.dart';
+import 'package:litgame_server/models/cards/card.dart';
+import 'package:litgame_server/models/game/game.dart';
+import 'package:litgame_server/models/game/user.dart';
+import 'package:litgame_server/service/helpers.dart';
+import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 
 Uri testUri(String uri) => Uri.parse('http://localhost:8080$uri');
