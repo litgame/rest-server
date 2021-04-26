@@ -24,6 +24,7 @@ class ApiMainService implements RestService {
     router.put('/finishJoin', _finishJoin);
     router.put('/setMaster', _setMaster);
     router.put('/sortPlayer', _sortPlayer);
+    router.put('/sortReset', _sortReset);
 
     router.mount('/training/', ApiTrainingService().router);
     router.mount('/game/', ApiGameService().router);
@@ -38,7 +39,7 @@ class ApiMainService implements RestService {
           : "can't start game without an id!",
       'adminId': (value, _) {
         if (value.toString().isEmpty) return "can't start game without admin!";
-        if (LitGame.findGameOfPlayer(int.parse(value.toString())) != null) {
+        if (LitGame.findGameOfPlayer(value) != null) {
           return "can't start new game while playing an existing one";
         }
       }
@@ -178,5 +179,11 @@ class ApiMainService implements RestService {
 
     final action = SortAction(validator);
     return action.run();
+  }
+
+  Future<Response> _sortReset(Request request) async {
+    final validator = TriggeredByValidator(request, {});
+    final action = SortAction(validator);
+    return action.run(reset: true);
   }
 }

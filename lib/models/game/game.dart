@@ -123,7 +123,7 @@ class LitGame {
     }
   }
 
-  static LitGame? findGameOfPlayer(int userId) {
+  static LitGame? findGameOfPlayer(String userId) {
     for (var game in _activeGames.entries) {
       final player = game.value.players[userId];
       if (player != null) {

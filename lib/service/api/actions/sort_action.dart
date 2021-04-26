@@ -2,6 +2,7 @@ import 'package:litgame_server/models/game/game.dart';
 import 'package:litgame_server/models/game/user.dart';
 import 'package:litgame_server/service/api/actions/core.dart';
 import 'package:litgame_server/service/api/validators/target_user.dart';
+import 'package:litgame_server/service/api/validators/triggered_by.dart';
 import 'package:shelf/src/response.dart';
 
 import '../../helpers.dart';
@@ -9,10 +10,10 @@ import '../../helpers.dart';
 class SortAction implements Action {
   SortAction(this.validator);
 
-  TargetUserValidator validator;
+  TriggeredByValidator validator;
 
   @override
-  Future<Response> run() async {
+  Future<Response> run({bool reset = false}) async {
     var error = await validator.validate();
     if (error != null) {
       return error;
@@ -29,10 +30,22 @@ class SortAction implements Action {
           "Can't sort players at ${validator.game.state.toString()} state");
     }
 
-    final playerToSort = validator.game.players[validator.targetUserId];
+    if (reset) {
+      validator.game.playersSorted.clear();
+      return SuccessResponse(
+          {'gameId': validator.game.id, 'playerPosition': 0});
+    } else {
+      return _sort();
+    }
+  }
+
+  Future<Response> _sort() async {
+    final validator2 = validator as TargetUserValidator;
+
+    final playerToSort = validator.game.players[validator2.targetUserId];
     if (playerToSort == null) {
       return ErrorResponse(
-          'Player ${validator.targetUserId} not found in game');
+          'Player ${validator2.targetUserId} not found in game');
     }
     final position = int.parse(validator.validatedJson['position'].toString());
     final playersSorted = validator.game.playersSorted;
@@ -44,8 +57,8 @@ class SortAction implements Action {
       });
     } else {
       try {
-        final existing = playersSorted
-            .firstWhere((element) => element.user.id == validator.targetUserId);
+        final existing = playersSorted.firstWhere(
+            (element) => element.user.id == validator2.targetUserId);
         existing.unlink();
       } catch (_) {}
 

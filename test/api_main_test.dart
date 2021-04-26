@@ -25,7 +25,7 @@ void main() async {
 
     expect(response.statusCode, equals(500));
 
-    response = await testRequest('PUT', '/api/game/endGame',
+    response = await testRequest('PUT', '/api/game/end',
         body: {'gameId': 'test-123', 'triggeredBy': 'testUser-123'}.toJson());
 
     expect(response.statusCode, equals(200));
@@ -292,6 +292,66 @@ void main() async {
     expect(sorted.user.id, 'testUser-1');
     sorted = sorted.next as LinkedUser;
     expect(sorted.user.id, 'testUser-3');
+    game.stop();
+  });
+
+  test('Reset sorting', () async {
+    final game = LitGame.startNew('test-123');
+    final user1 = LitUser('testUser-1', isAdmin: true);
+    final user2 = LitUser('testUser-2', isGameMaster: true);
+    final user3 = LitUser('testUser-3');
+    game.addPlayer(user1);
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+    game.startSorting();
+
+    var response = await testRequest('PUT', '/api/game/sortPlayer',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-2',
+          'position': 1
+        }.toJson());
+
+    response = await testRequest('PUT', '/api/game/sortPlayer',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-3',
+          'position': 1
+        }.toJson());
+
+    response = await testRequest('PUT', '/api/game/sortPlayer',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-1',
+          'position': 1
+        }.toJson());
+
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
+    expect(game.playersSorted.length, 3);
+
+    response = await testRequest('PUT', '/api/game/sortReset',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-3',
+        }.toJson());
+
+    expect(response.statusCode, equals(500),
+        reason: await response.readAsString());
+
+    response = await testRequest('PUT', '/api/game/sortReset',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
+
+    expect(game.playersSorted.length, 0);
     game.stop();
   });
 }
