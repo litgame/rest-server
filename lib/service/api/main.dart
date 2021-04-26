@@ -17,8 +17,8 @@ class ApiMainService implements RestService {
   Router get router {
     final router = Router();
 
-    router.put('/startGame', _startGame);
-    router.put('/endGame', _endGame);
+    router.put('/start', _startGame);
+    router.put('/end', _endGame);
     router.put('/join', _join);
     router.put('/kick', _kick);
     router.put('/finishJoin', _finishJoin);

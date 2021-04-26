@@ -7,7 +7,7 @@ import 'helpers.dart';
 
 void main() async {
   test("/startGame test", () async {
-    var response = await testRequest('PUT', '/api/game/startGame',
+    var response = await testRequest('PUT', '/api/game/start',
         body: {'gameId': 'test-123', 'adminId': 'testUser-123'}.toJson());
     expect(response.statusCode, equals(200));
     final expected = {'gameId': 'test-123', 'status': 'started'}.toJson();
@@ -20,7 +20,7 @@ void main() async {
     final game = LitGame.startNew('test-123');
     game.addPlayer(LitUser('testUser-123', isAdmin: true));
 
-    var response = await testRequest('PUT', '/api/game/endGame',
+    var response = await testRequest('PUT', '/api/game/end',
         body: {'gameId': 'invalid', 'triggeredBy': 'invalid'}.toJson());
 
     expect(response.statusCode, equals(500));
