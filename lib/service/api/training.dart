@@ -68,6 +68,8 @@ class ApiTrainingService implements RestService {
       return ErrorResponse('Fatal error: game flow object lost');
     }
 
+    await validator.game.gameFlow?.init;
+
     error = validator.checkIfTriggeredAtMyTurn(flow);
     if (error != null) {
       return error;

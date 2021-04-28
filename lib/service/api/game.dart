@@ -44,6 +44,8 @@ class ApiGameService implements RestService {
       return ErrorResponse('Error during game start');
     }
 
+    await flow.init;
+
     final genericCard = flow.getCard(CardType.generic);
     final placeCard = flow.getCard(CardType.place);
     final personCard = flow.getCard(CardType.person);
@@ -73,6 +75,8 @@ class ApiGameService implements RestService {
     final flow = validator.game.gameFlow;
     if (flow == null) throw 'Fatal error: null flow';
 
+    await flow.init;
+
     final cardType = validator.validatedJson['selectCardType'].toString();
     final card = flow.getCard(CardType.generic.getTypeByName(cardType));
 
@@ -95,6 +99,8 @@ class ApiGameService implements RestService {
 
     final flow = validator.game.gameFlow;
     if (flow == null) throw 'Fatal error: null flow';
+
+    await flow.init;
 
     flow.nextTurn();
     return SuccessResponse({
