@@ -41,6 +41,7 @@ class FlowValidator extends TriggeredByValidator {
         }
         break;
     }
+    await game.gameFlow?.init;
 
     error = checkIfTriggeredAtMyTurn(flow);
     if (error != null) {
