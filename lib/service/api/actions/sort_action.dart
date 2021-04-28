@@ -72,7 +72,7 @@ class SortAction implements Action {
         playersSorted.add(LinkedUser(playerToSort));
         return SuccessResponse({
           'gameId': validator.game.id,
-          'playerPosition': playersSorted.length,
+          'playerPosition': playersSorted.length - 1,
         });
       } else {
         var counter = 0;
