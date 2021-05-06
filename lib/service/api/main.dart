@@ -26,6 +26,8 @@ class ApiMainService implements RestService {
     router.put('/sortPlayer', _sortPlayer);
     router.put('/sortReset', _sortReset);
 
+    router.get('/list', _list);
+
     router.mount('/training/', ApiTrainingService().router);
     router.mount('/game/', ApiGameService().router);
 
@@ -39,14 +41,15 @@ class ApiMainService implements RestService {
           : "can't start game without an id!",
       'adminId': (value, _) {
         if (value.toString().isEmpty) return "can't start game without admin!";
-        if (LitGame.findGameOfPlayer(value) != null) {
-          return "can't start new game while playing an existing one";
-        }
       }
     });
     final error = await validator.validate();
     if (error != null) {
       return error;
+    }
+    if (LitGame.findGameOfPlayer(validator.validatedJson['adminId']) != null) {
+      return ErrorExistingResponse(
+          "can't start new game while playing an existing one");
     }
 
     final newGame = LitGame.startNew(validator.validatedJson['gameId']);
@@ -64,7 +67,7 @@ class ApiMainService implements RestService {
 
     final game = validator.game;
     if (game.admin.id != validator.triggeredBy) {
-      return ErrorResponse('Only admin can finish the game!');
+      return ErrorAccessResponse('Only admin can finish the game!');
     }
 
     try {
@@ -86,6 +89,19 @@ class ApiMainService implements RestService {
 
     final game = validator.game;
     if (game.state == GameState.join) {
+      final existingGame =
+          LitGame.findPlayerInExistingGames(validator.triggeredBy);
+      if (existingGame != null) {
+        if (game.id == existingGame.id) {
+          return ErrorExistingResponse(
+              "Can't add user ${validator.triggeredBy}: already playing this game");
+        } else {
+          return ErrorAnotherGameResponse(
+              "Can't add user ${validator.triggeredBy}: already playing another game",
+              existingGame.id);
+        }
+      }
+
       if (game.addPlayer(LitUser(validator.triggeredBy))) {
         return SuccessResponse(
             {'userId': validator.triggeredBy, 'joined': true});
@@ -128,7 +144,7 @@ class ApiMainService implements RestService {
     if (validator.game.startSorting()) {
       return SuccessResponse({'gameId': validator.game.id, 'state': 'sorting'});
     } else {
-      return ErrorResponse(
+      return ErrorStateResponse(
           'Can\'t start sorting from state ${validator.game.state.toString()}'
           ' with ${validator.game.players.length} players');
     }
@@ -151,7 +167,7 @@ class ApiMainService implements RestService {
     final targetUserId = validator.targetUserId.toString();
     final player = validator.game.players[targetUserId];
     if (player == null) {
-      return ErrorResponse('Player $targetUserId not found in game');
+      return ErrorNotFoundResponse('Player $targetUserId not found in game');
     }
 
     validator.game.players.forEach((id, player) {
@@ -185,5 +201,9 @@ class ApiMainService implements RestService {
     final validator = TriggeredByValidator(request, {});
     final action = SortAction(validator);
     return action.run(reset: true);
+  }
+
+  Future<Response> _list(Request request) async {
+    return SuccessResponse({'games': LitGame.allGames()});
   }
 }

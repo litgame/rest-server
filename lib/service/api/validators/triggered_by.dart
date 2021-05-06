@@ -29,9 +29,9 @@ class TriggeredByValidator extends JsonBodyValidator {
 
   String get triggeredBy => validatedJson['triggeredBy'];
 
-  ErrorResponse? checkIfMasterOrAdmin(String errorDescription) {
+  ErrorAccessResponse? checkIfMasterOrAdmin(String errorDescription) {
     if (game.admin.id != triggeredBy) {
-      final errResponse = ErrorResponse(errorDescription);
+      final errResponse = ErrorAccessResponse(errorDescription);
       try {
         if (game.master.id != triggeredBy) {
           return errResponse;

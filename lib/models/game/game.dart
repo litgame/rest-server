@@ -58,6 +58,8 @@ class LitGame {
     return _activeGames[gameId];
   }
 
+  static Map<String, LitGame> allGames() => _activeGames;
+
   static void stopGame(String gameId) {
     if (_activeGames[gameId] == null) {
       throw 'Game $gameId does not exists. Cant stop it!';
@@ -158,5 +160,25 @@ class LitGame {
           playersSorted.firstWhere((element) => element.user.id == user.id);
       playersSorted.remove(player);
     }
+  }
+
+  Map toJson() {
+    var gameMaster;
+    var gameAdmin;
+    try {
+      gameMaster = master;
+    } catch (e) {}
+    try {
+      gameAdmin = admin;
+    } catch (e) {}
+
+    return {
+      'id': id,
+      'state': state.toString(),
+      'players': players,
+      'playersOrder': playersSorted.toList(growable: false),
+      'admin': gameAdmin,
+      'master': gameMaster,
+    };
   }
 }

@@ -13,10 +13,14 @@ class LitUser {
 
   @override
   bool operator ==(Object other) => other is LitUser && other.id == id;
+
+  Map toJson() => {'id': id, 'isAdmin': isAdmin, 'isGameMaster': isGameMaster};
 }
 
 class LinkedUser extends LinkedListEntry<LinkedUser> {
   LinkedUser(this.user);
 
   final LitUser user;
+
+  Map toJson() => user.toJson();
 }

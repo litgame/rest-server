@@ -73,7 +73,7 @@ class KickAction implements Action {
     }
     final newAdmin = game.players[newAdminId.toString()];
     if (newAdmin == null) {
-      return ErrorResponse(
+      return ErrorNotFoundResponse(
           'Specified admin $newAdminId does not involved into the game');
     }
     newAdmin.isAdmin = true;
@@ -90,7 +90,7 @@ class KickAction implements Action {
     }
     final newMaster = game.players[newMasterId.toString()];
     if (newMaster == null) {
-      return ErrorResponse(
+      return ErrorNotFoundResponse(
           'Specified master $newMasterId does not involved into the game');
     }
     newMaster.isGameMaster = true;
@@ -99,7 +99,7 @@ class KickAction implements Action {
 
   Future<Response> _kickAnother() async {
     if (game.admin.id != triggeredBy) {
-      return ErrorResponse('Only admin can kick users');
+      return ErrorAccessResponse('Only admin can kick users');
     }
 
     final body = {
