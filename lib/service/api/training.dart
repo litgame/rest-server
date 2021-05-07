@@ -33,7 +33,7 @@ class ApiTrainingService implements RestService {
     }
 
     if (validator.game.state != GameState.sorting) {
-      return ErrorResponse(
+      return ErrorStateResponse(
           'Cant start training at state ${validator.game.state.toString()}');
     }
 
@@ -59,7 +59,7 @@ class ApiTrainingService implements RestService {
     }
 
     if (validator.game.state != GameState.training) {
-      return ErrorResponse(
+      return ErrorStateResponse(
           'The game must to be in training state. Current state is ${validator.game.state.toString()}');
     }
 

@@ -35,7 +35,7 @@ class ApiGameService implements RestService {
     }
 
     if (validator.game.state != GameState.training) {
-      return ErrorResponse(
+      return ErrorStateResponse(
           'Cant start game at state ${validator.game.state.toString()}');
     }
 

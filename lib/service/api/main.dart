@@ -138,7 +138,7 @@ class ApiMainService implements RestService {
     }
 
     if (validator.game.admin.id != validator.triggeredBy) {
-      return ErrorResponse('Only admin can end join phase');
+      return ErrorAccessResponse('Only admin can end join phase');
     }
 
     if (validator.game.startSorting()) {

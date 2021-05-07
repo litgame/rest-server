@@ -22,7 +22,7 @@ class FlowValidator extends TriggeredByValidator {
     }
 
     if (game.state != GameState.game && game.state != GameState.training) {
-      return ErrorResponse(
+      return ErrorStateResponse(
           'The game must to be in "game" or "training" state. Current state is ${game.state.toString()}');
     }
 
@@ -49,9 +49,9 @@ class FlowValidator extends TriggeredByValidator {
     }
   }
 
-  ErrorResponse? checkIfTriggeredAtMyTurn(FlowInterface flow) {
+  ErrorAccessResponse? checkIfTriggeredAtMyTurn(FlowInterface flow) {
     if (triggeredBy != flow.currentUser.id) {
-      return ErrorResponse('It\'s not user\'s $triggeredBy turn now. '
+      return ErrorAccessResponse('It\'s not user\'s $triggeredBy turn now. '
           'Player ${flow.currentUser.id} should trigger next turn');
     }
     return null;
