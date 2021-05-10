@@ -2,14 +2,9 @@ import 'dart:convert';
 
 import 'package:shelf/shelf.dart';
 
-const Map<String, String> jsonHttpHeader = {'Content-Type': 'application/json'};
+import 'error.dart';
 
-const String ERRTYPE_VALIDATION = 'validation';
-const String ERRTYPE_EXISTS = 'already_exists';
-const String ERRTYPE_ANOTHER_GAME = 'another_game';
-const String ERRTYPE_ACCESS = 'access';
-const String ERRTYPE_STATE = 'state';
-const String ERRTYPE_NOT_FOUND = 'state';
+const Map<String, String> jsonHttpHeader = {'Content-Type': 'application/json'};
 
 extension ToJson on Map {
   String toJson() => jsonEncode(this);
@@ -23,28 +18,32 @@ class SuccessResponse extends Response {
 class ErrorResponse extends Response {
   ErrorResponse(String error)
       : super.internalServerError(
-            body: {'error': error, 'type': ERRTYPE_VALIDATION}.toJson(),
+            body: {'error': error, 'type': ErrorType.validation.toErrorString()}
+                .toJson(),
             headers: jsonHttpHeader);
 }
 
 class ErrorNotFoundResponse extends Response {
   ErrorNotFoundResponse(String error)
       : super.internalServerError(
-            body: {'error': error, 'type': ERRTYPE_NOT_FOUND}.toJson(),
+            body: {'error': error, 'type': ErrorType.notFound.toErrorString()}
+                .toJson(),
             headers: jsonHttpHeader);
 }
 
 class ErrorStateResponse extends Response {
   ErrorStateResponse(String error)
       : super.internalServerError(
-            body: {'error': error, 'type': ERRTYPE_STATE}.toJson(),
+            body: {'error': error, 'type': ErrorType.state.toErrorString()}
+                .toJson(),
             headers: jsonHttpHeader);
 }
 
 class ErrorExistingResponse extends Response {
   ErrorExistingResponse(String error)
       : super.internalServerError(
-            body: {'error': error, 'type': ERRTYPE_EXISTS}.toJson(),
+            body: {'error': error, 'type': ErrorType.exists.toErrorString()}
+                .toJson(),
             headers: jsonHttpHeader);
 }
 
@@ -53,7 +52,7 @@ class ErrorAnotherGameResponse extends Response {
       : super.internalServerError(
             body: {
               'error': error,
-              'type': ERRTYPE_ANOTHER_GAME,
+              'type': ErrorType.anotherGame.toErrorString(),
               'gameId': gameId
             }.toJson(),
             headers: jsonHttpHeader);
@@ -62,7 +61,8 @@ class ErrorAnotherGameResponse extends Response {
 class ErrorAccessResponse extends Response {
   ErrorAccessResponse(String error)
       : super.internalServerError(
-            body: {'error': error, 'type': ERRTYPE_ACCESS}.toJson(),
+            body: {'error': error, 'type': ErrorType.access.toErrorString()}
+                .toJson(),
             headers: jsonHttpHeader);
 }
 

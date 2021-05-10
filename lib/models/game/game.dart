@@ -85,14 +85,20 @@ class LitGame {
   }
 
   TrainingFlow? startTraining(
-      {String collectionName = '', Map<String, List<Card>>? cards}) {
+      {String collectionName = '',
+      String? collectionId,
+      Map<String, List<Card>>? cards}) {
     try {
       master;
       if (_state != GameState.sorting) {
         return null;
       }
       if (cards == null) {
-        _gameFlow = GameFlow.init(this, collectionName: collectionName);
+        if (collectionId != null) {
+          _gameFlow = GameFlow.init(this, collectionId: collectionId);
+        } else {
+          _gameFlow = GameFlow.init(this, collectionName: collectionName);
+        }
       } else {
         _gameFlow = GameFlow.init(this, cards: cards);
       }

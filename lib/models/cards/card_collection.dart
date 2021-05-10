@@ -121,9 +121,17 @@ class CardCollection extends ParseObject implements ParseCloneable {
     }
   }
 
-  static Future<CardCollection> fromServer(String name) async {
-    final builder = QueryBuilder<CardCollection>(CardCollection.clone())
-      ..whereEqualTo('name', name);
+  static Future<CardCollection> fromServer({String? name, String? id}) async {
+    QueryBuilder<CardCollection>? builder;
+    if (id != null) {
+      builder = QueryBuilder<CardCollection>(CardCollection.clone())
+        ..whereEqualTo('objectId', id);
+    } else if (name != null) {
+      builder = QueryBuilder<CardCollection>(CardCollection.clone())
+        ..whereEqualTo('name', name);
+    } else {
+      throw 'Cant find collection without name or id';
+    }
     var completer = Completer();
     var loadCards = completer.future;
     var loadCollection =

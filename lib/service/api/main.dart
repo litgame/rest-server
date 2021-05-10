@@ -89,8 +89,7 @@ class ApiMainService implements RestService {
 
     final game = validator.game;
     if (game.state == GameState.join) {
-      final existingGame =
-          LitGame.findPlayerInExistingGames(validator.triggeredBy);
+      final existingGame = LitGame.findGameOfPlayer(validator.triggeredBy);
       if (existingGame != null) {
         if (game.id == existingGame.id) {
           return ErrorExistingResponse(

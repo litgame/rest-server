@@ -28,10 +28,17 @@ class GameFlow implements FlowInterface {
   GameFlowState get state => _state;
 
   factory GameFlow.init(LitGame game,
-      {String collectionName = '', Map<String, List<Card>>? cards}) {
+      {String collectionName = '',
+      String? collectionId,
+      Map<String, List<Card>>? cards}) {
     var flow = _runningGames[game.id];
     if (cards == null) {
-      flow ??= GameFlow.serverCollection(game, collectionName);
+      if (collectionId != null) {
+        flow ??= GameFlow.serverCollection(game, collectionId: collectionId);
+      } else {
+        flow ??=
+            GameFlow.serverCollection(game, collectionName: collectionName);
+      }
     } else {
       flow ??= GameFlow.staticCollection(game, cards);
     }
@@ -39,9 +46,16 @@ class GameFlow implements FlowInterface {
     return flow;
   }
 
-  GameFlow.serverCollection(this.game, [this.collectionName = '']) {
+  GameFlow.serverCollection(this.game,
+      {this.collectionName = '', String? collectionId}) {
     _user = game.playersSorted.first;
-    init = CardCollection.fromServer(collectionName).then((loadedCollection) {
+
+    if (collectionId != null) {
+      init = CardCollection.fromServer(id: collectionId);
+    } else {
+      init = CardCollection.fromServer(name: collectionName);
+    }
+    init.then((loadedCollection) {
       _loadedCollections[collectionName] = loadedCollection;
       _collection?.cards.forEach((key, value) {
         cards[key] = List.from(value);

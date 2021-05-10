@@ -41,12 +41,16 @@ class ApiTrainingService implements RestService {
     if (collectionName == null) {
       collectionName = 'default';
     }
-    final flow =
-        validator.game.startTraining(collectionName: collectionName.toString());
+
+    var collectionId = validator.validatedJson['collectionId'];
+
+    final flow = validator.game.startTraining(
+        collectionName: collectionName.toString(), collectionId: collectionId);
     if (flow == null) {
       return ErrorResponse('Error during training start');
     }
 
+    await flow.gameFlow.init;
     return SuccessResponse({'gameId': validator.game.id, 'state': 'training'});
   }
 

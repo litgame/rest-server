@@ -56,4 +56,17 @@ class Card extends ParseObject implements ParseCloneable {
   String get collectionName => this['collection'];
 
   CardType get cardType => CardType.generic.getTypeByName(this['cardType']);
+
+  @override
+  Map<String, dynamic> toJson(
+      {bool full = false,
+      bool forApiRQ = false,
+      bool allowCustomObjectId = false}) {
+    final map = super.toJson(
+        full: full,
+        forApiRQ: forApiRQ,
+        allowCustomObjectId: allowCustomObjectId);
+    map['imgUrl'] = this.imgUrl;
+    return map;
+  }
 }
