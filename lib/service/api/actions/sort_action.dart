@@ -47,7 +47,7 @@ class SortAction implements Action {
       return ErrorNotFoundResponse(
           'Player ${validator2.targetUserId} not found in game');
     }
-    final position = int.parse(validator.validatedJson['position'].toString());
+    final position = int.parse(validator.validated['position'].toString());
     final playersSorted = validator.game.playersSorted;
     if (playersSorted.length == 0) {
       playersSorted.add(LinkedUser(playerToSort));

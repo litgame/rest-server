@@ -69,18 +69,25 @@ class ErrorAccessResponse extends Response {
 typedef BodyItemValidator = String? Function(
     dynamic value, Map<String, dynamic> allBody);
 
-class JsonBodyValidator {
-  JsonBodyValidator(this.request, this._rules);
+abstract class CoreValidator {
+  CoreValidator(this.request, this.rules);
 
   final Request request;
-  final Map<String, BodyItemValidator?> _rules;
+  final Map<String, BodyItemValidator?> rules;
 
-  Map<String, dynamic>? _body;
+  Map<String, dynamic>? data;
 
-  Map<String, dynamic> get validatedJson {
-    if (_body == null) throw 'Request did not checked!';
-    return _body as Map<String, dynamic>;
+  Map<String, dynamic> get validated {
+    if (data == null) throw 'Request did not checked!';
+    return data as Map<String, dynamic>;
   }
+
+  Future<Response?> validate();
+}
+
+class JsonBodyValidator extends CoreValidator {
+  JsonBodyValidator(Request request, Map<String, BodyItemValidator?> rules)
+      : super(request, rules);
 
   Future<Response?> validate() async {
     var jsonData;
@@ -90,7 +97,7 @@ class JsonBodyValidator {
     } catch (decodeError) {
       return ErrorResponse('Error decoding JSON: ' + decodeError.toString());
     }
-    for (var item in _rules.entries) {
+    for (var item in rules.entries) {
       final value = jsonData[item.key];
       if (value == null) {
         return ErrorResponse('Field ${item.key} does not exists');
@@ -105,7 +112,34 @@ class JsonBodyValidator {
       }
     }
 
-    _body = jsonData;
+    data = jsonData;
+    return null;
+  }
+}
+
+class GetValidator extends CoreValidator {
+  GetValidator(Request request, Map<String, BodyItemValidator?> rules)
+      : super(request, rules);
+
+  @override
+  Future<Response?> validate() async {
+    var query = request.url.queryParameters;
+    for (var item in rules.entries) {
+      final value = query[item.key];
+      if (value == null) {
+        return ErrorResponse('Field ${item.key} does not exists');
+      }
+
+      final checkFunction = item.value;
+      if (checkFunction != null) {
+        final error = checkFunction(value, query);
+        if (error != null) {
+          return ErrorResponse('Field ${item.key} validation error: $error');
+        }
+      }
+    }
+
+    data = query;
     return null;
   }
 }

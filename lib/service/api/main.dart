@@ -7,6 +7,7 @@ import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+import '../error.dart';
 import '../helpers.dart';
 import 'game.dart';
 import 'validators/target_user.dart';
@@ -27,6 +28,7 @@ class ApiMainService implements RestService {
     router.put('/sortReset', _sortReset);
 
     router.get('/list', _list);
+    router.get('/info', _get);
 
     router.mount('/training/', ApiTrainingService().router);
     router.mount('/game/', ApiGameService().router);
@@ -47,14 +49,13 @@ class ApiMainService implements RestService {
     if (error != null) {
       return error;
     }
-    if (LitGame.findGameOfPlayer(validator.validatedJson['adminId']) != null) {
+    if (LitGame.findGameOfPlayer(validator.validated['adminId']) != null) {
       return ErrorExistingResponse(
           "can't start new game while playing an existing one");
     }
 
-    final newGame = LitGame.startNew(validator.validatedJson['gameId']);
-    newGame
-        .addPlayer(LitUser(validator.validatedJson['adminId'], isAdmin: true));
+    final newGame = LitGame.startNew(validator.validated['gameId']);
+    newGame.addPlayer(LitUser(validator.validated['adminId'], isAdmin: true));
     return SuccessResponse({'gameId': newGame.id, 'status': 'started'});
   }
 
@@ -124,7 +125,7 @@ class ApiMainService implements RestService {
     final game = validator.game;
     final targetUserId = validator.targetUserId.toString();
     final action = KickAction(
-        game, validator.triggeredBy, targetUserId, validator.validatedJson);
+        game, validator.triggeredBy, targetUserId, validator.validated);
     return action.run();
   }
 
@@ -203,6 +204,26 @@ class ApiMainService implements RestService {
   }
 
   Future<Response> _list(Request request) async {
+    if (LitGameRestService.debugMode == false) {
+      return Response(404,
+          body: {
+            'error': 'Feature is disabled in production mode',
+            'type': ErrorType.notFound.toErrorString()
+          }.toJson());
+    }
     return SuccessResponse({'games': LitGame.allGames()});
+  }
+
+  Future<Response> _get(Request request) async {
+    var gameId = request.url.query;
+    if (gameId.isEmpty) {
+      return ErrorNotFoundResponse('Game id not specified');
+    }
+
+    final game = LitGame.find(gameId);
+    if (game == null) {
+      return ErrorNotFoundResponse('Game not found!');
+    }
+    return SuccessResponse(game.toJson());
   }
 }

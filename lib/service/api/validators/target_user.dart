@@ -15,5 +15,5 @@ class TargetUserValidator extends TriggeredByValidator {
               }
             }..addEntries(rules.entries));
 
-  String get targetUserId => validatedJson['targetUserId'];
+  String get targetUserId => validated['targetUserId'];
 }

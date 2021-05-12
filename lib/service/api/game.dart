@@ -77,7 +77,7 @@ class ApiGameService implements RestService {
 
     await flow.init;
 
-    final cardType = validator.validatedJson['selectCardType'].toString();
+    final cardType = validator.validated['selectCardType'].toString();
     final card = flow.getCard(CardType.generic.getTypeByName(cardType));
 
     return SuccessResponse({

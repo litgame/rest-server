@@ -15,6 +15,8 @@ abstract class RestService {
 }
 
 class LitGameRestService {
+  static bool debugMode = false;
+
   LitGameRestService() {
     final envVars = Platform.environment;
     var useDefault = false;
@@ -29,6 +31,10 @@ class LitGameRestService {
 
     final _parseRestKey = envVars['BOT_PARSESERVER_REST_KEY'];
     if (_parseRestKey == null) useDefault = true;
+
+    if (envVars['BOT_DEBUG_MODE'] == 'true') {
+      debugMode = true;
+    }
 
     if (useDefault) {
       init = Parse().initialize(

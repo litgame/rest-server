@@ -37,12 +37,12 @@ class ApiTrainingService implements RestService {
           'Cant start training at state ${validator.game.state.toString()}');
     }
 
-    var collectionName = validator.validatedJson['collectionName'];
+    var collectionName = validator.validated['collectionName'];
     if (collectionName == null) {
       collectionName = 'default';
     }
 
-    var collectionId = validator.validatedJson['collectionId'];
+    var collectionId = validator.validated['collectionId'];
 
     final flow = validator.game.startTraining(
         collectionName: collectionName.toString(), collectionId: collectionId);
@@ -79,7 +79,11 @@ class ApiTrainingService implements RestService {
       return error;
     }
 
-    flow.nextTurn();
+    if (flow.turnNumber > 1) {
+      flow.nextTurn();
+    } else {
+      flow.turnNumber++;
+    }
     final card = flow.getCard();
     return SuccessResponse(
         // ignore: invalid_use_of_protected_member

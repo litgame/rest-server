@@ -23,11 +23,11 @@ class TriggeredByValidator extends JsonBodyValidator {
               }
             }..addEntries(rules.entries));
 
-  String get gameId => validatedJson['gameId'];
+  String get gameId => validated['gameId'];
 
   LitGame get game => LitGame.find(gameId) as LitGame;
 
-  String get triggeredBy => validatedJson['triggeredBy'];
+  String get triggeredBy => validated['triggeredBy'];
 
   ErrorAccessResponse? checkIfMasterOrAdmin(String errorDescription) {
     if (game.admin.id != triggeredBy) {
