@@ -136,7 +136,10 @@ class CardCollection extends ParseObject implements ParseCloneable {
     var loadCards = completer.future;
     var loadCollection =
         builder.query<CardCollection>().then((ParseResponse response) {
-      if (response.results == null) return CardCollection('');
+      if (response.results == null) {
+        completer.complete();
+        return CardCollection('');
+      }
       var c = response.results?.first;
       if (c == null) {
         throw 'response is empty!';
