@@ -1,4 +1,4 @@
-name: Tests
+name: Test & build
 
 on:
   push:
@@ -39,3 +39,12 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+
+      - name: Build binary
+        run: dart compile exe bin/server.dart
+
+      - name: Archive binary artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: compiled
+          path: bin/server
