@@ -45,12 +45,16 @@ class Card extends ParseObject implements ParseCloneable {
   String get name => this['name'];
 
   String get imgUrl {
-    final parseFile = this['img'] as ParseFile;
-    final url = parseFile.url;
-    if (url == null) {
-      throw 'url is empty!';
+    try {
+      final parseFile = this['img'] as ParseFile;
+      final url = parseFile.url;
+      if (url == null) {
+        return '';
+      }
+      return url;
+    } catch (_) {
+      return '';
     }
-    return url;
   }
 
   String get collectionName => this['collection'];

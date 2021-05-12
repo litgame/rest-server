@@ -58,6 +58,16 @@ void main() async {
 
     expect(response.statusCode, equals(200),
         reason: await response.readAsString());
+    expect(game.trainingFlow?.currentUser.id, 'testUser-1');
+
+    response = await testRequest('PUT', '/api/game/training/next',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
     expect(game.trainingFlow?.currentUser.id, 'testUser-2');
 
     game.stop();
