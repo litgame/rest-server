@@ -15,14 +15,14 @@ void main(List<String> arguments) async {
     final env = Platform.environment;
     host = env['GAME_REST_HOST'] ?? 'localhost';
     if (env['GAME_REST_PORT'] == null) {
-      port = 8080;
+      port = 8042;
     } else {
-      port = int.tryParse(env['GAME_REST_PORT']!) ?? 8080;
+      port = int.tryParse(env['GAME_REST_PORT']!) ?? 8042;
     }
   } else {
     final parser = ArgParser()
       ..addOption('host', abbr: 'h', defaultsTo: 'localhost')
-      ..addOption('port', abbr: 'p', defaultsTo: 8080.toString());
+      ..addOption('port', abbr: 'p', defaultsTo: 8042.toString());
 
     final results = parser.parse(arguments);
     host = results['host'];

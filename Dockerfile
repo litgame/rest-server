@@ -6,5 +6,5 @@ RUN pub get
 ADD . /app
 RUN pub get --offline
 RUN chmod +x bin/runserver.sh
-
-ENTRYPOINT [ "/usr/lib/dart/bin/dart", "run", "/app/bin/server.dart" ]
+ENTRYPOINT [ "bin/runserver.sh" ]
+#ENTRYPOINT [ "/usr/lib/dart/bin/dart", "run", "/app/bin/server.dart" ]

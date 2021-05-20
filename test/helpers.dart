@@ -5,7 +5,7 @@ import 'package:litgame_server/service/helpers.dart';
 import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 
-Uri testUri(String uri) => Uri.parse('http://localhost:8080$uri');
+Uri testUri(String uri) => Uri.parse('http://rest-server:8042$uri');
 
 Future<Response> testRequest(String method, String uri, {String? body}) async {
   final service = LitGameRestService();
