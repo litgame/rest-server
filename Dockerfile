@@ -1,10 +1,21 @@
-FROM google/dart:2.13-beta
-WORKDIR /app
+FROM dart:stable AS build
 
-ADD pubspec.* /app/
-RUN pub get
-ADD . /app
-RUN pub get --offline
-RUN chmod +x bin/runserver.sh
-ENTRYPOINT [ "bin/runserver.sh" ]
-#ENTRYPOINT [ "/usr/lib/dart/bin/dart", "run", "/app/bin/server.dart" ]
+# Resolve app dependencies.
+WORKDIR /app
+COPY pubspec.* ./
+RUN dart pub get
+
+# Copy app source code and AOT compile it.
+COPY . .
+# Ensure packages are still up-to-date if anything has changed
+RUN dart pub get --offline
+RUN dart compile exe bin/server.dart -o bin/server
+
+# Build minimal serving image from AOT-compiled `/server` and required system
+# libraries and configuration files stored in `/runtime/` from the build stage.
+FROM scratch
+COPY --from=build /runtime/ /
+COPY --from=build /app/bin/server /app/bin/
+
+# Start server.
+CMD ["/app/bin/server"]
