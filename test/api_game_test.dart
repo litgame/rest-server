@@ -118,4 +118,62 @@ void main() async {
 
     game.stop();
   });
+
+  test("Game skip turn test", () async {
+    final game = await startTrainingWithThreePlayers();
+
+    var response = await testRequest('PUT', '/api/game/game/start',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+
+    expect(response.statusCode, equals(200));
+
+    response = await testRequest('PUT', '/api/game/game/next',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-2',
+        }.toJson());
+
+    expect(response.statusCode, equals(500));
+
+    response = await testRequest('PUT', '/api/game/game/next',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+
+    expect(response.statusCode, equals(200));
+
+    expect(game.gameFlow?.currentUser.id, 'testUser-2');
+
+    response = await testRequest('PUT', '/api/game/game/skip',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-3',
+        }.toJson());
+
+    expect(response.statusCode, equals(500));
+
+    response = await testRequest('PUT', '/api/game/game/skip',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+    expect(response.statusCode, equals(200));
+
+    expect(game.gameFlow?.currentUser.id, 'testUser-3');
+
+    response = await testRequest('PUT', '/api/game/game/skip',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-2',
+        }.toJson());
+    expect(response.statusCode, equals(200));
+
+    expect(game.gameFlow?.currentUser.id, 'testUser-1');
+
+    game.stop();
+  });
 }

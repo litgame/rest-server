@@ -16,6 +16,7 @@ class ApiGameService implements RestService {
     router.put('/start', _startGame);
     router.put('/selectCard', _selectCard);
     router.put('/next', _nextTurn);
+    router.put('/skip', _skip);
 
     return router;
   }
@@ -93,6 +94,33 @@ class ApiGameService implements RestService {
     final validator = FlowValidator(request, FlowValidatorType.game, {});
 
     var error = await validator.validate();
+    if (error != null) {
+      return error;
+    }
+
+    final flow = validator.game.gameFlow;
+    if (flow == null) throw 'Fatal error: null flow';
+
+    await flow.init;
+
+    flow.nextTurn();
+    return SuccessResponse({
+      'gameId': validator.game.id,
+      'playerId': flow.currentUser.id,
+      'flowState': 'selectCard'
+    });
+  }
+
+  Future<Response> _skip(Request request) async {
+    final validator = FlowValidator(request, FlowValidatorType.game, {});
+
+    var error = await validator.validate(skipTurnCheck: true);
+    if (error != null) {
+      return error;
+    }
+
+    error = validator
+        .checkIfMasterOrAdmin('Only admin or master can slip a player\'s turn');
     if (error != null) {
       return error;
     }

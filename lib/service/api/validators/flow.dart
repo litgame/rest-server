@@ -15,7 +15,7 @@ class FlowValidator extends TriggeredByValidator {
   final FlowValidatorType type;
 
   @override
-  Future<Response?> validate() async {
+  Future<Response?> validate({bool skipTurnCheck: false}) async {
     var error = await super.validate();
     if (error != null) {
       return error;
@@ -43,9 +43,11 @@ class FlowValidator extends TriggeredByValidator {
     }
     await game.gameFlow?.init;
 
-    error = checkIfTriggeredAtMyTurn(flow);
-    if (error != null) {
-      return error;
+    if (!skipTurnCheck) {
+      error = checkIfTriggeredAtMyTurn(flow);
+      if (error != null) {
+        return error;
+      }
     }
   }
 

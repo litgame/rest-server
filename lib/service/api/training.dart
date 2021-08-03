@@ -14,6 +14,7 @@ class ApiTrainingService implements RestService {
 
     router.put('/start', _startTraining);
     router.put('/next', _nextTurn);
+    router.put('/skip', _skip);
 
     return router;
   }
@@ -72,9 +73,39 @@ class ApiTrainingService implements RestService {
       return ErrorResponse('Fatal error: game flow object lost');
     }
 
-    await validator.game.gameFlow?.init;
+    if (flow.turnNumber > 1) {
+      flow.nextTurn();
+    } else {
+      flow.turnNumber++;
+    }
+    final card = flow.getCard();
+    return SuccessResponse({
+      'gameId': validator.game.id,
+      'playerId': flow.currentUser.id,
+      'card': card.toJson()
+    });
+  }
 
-    error = validator.checkIfTriggeredAtMyTurn(flow);
+  Future<Response> _skip(Request request) async {
+    final validator = FlowValidator(request, FlowValidatorType.training, {});
+
+    var error = await validator.validate(skipTurnCheck: true);
+    if (error != null) {
+      return error;
+    }
+
+    if (validator.game.state != GameState.training) {
+      return ErrorStateResponse(
+          'The game must to be in training state. Current state is ${validator.game.state.toString()}');
+    }
+
+    final flow = validator.game.trainingFlow;
+    if (flow == null) {
+      return ErrorResponse('Fatal error: game flow object lost');
+    }
+
+    error = validator
+        .checkIfMasterOrAdmin('Only admin or master can slip a player\'s turn');
     if (error != null) {
       return error;
     }
@@ -85,12 +116,10 @@ class ApiTrainingService implements RestService {
       flow.turnNumber++;
     }
     final card = flow.getCard();
-    return SuccessResponse(
-        // ignore: invalid_use_of_protected_member
-        {
-          'gameId': validator.game.id,
-          'playerId': flow.currentUser.id,
-          'card': card.toJson()
-        });
+    return SuccessResponse({
+      'gameId': validator.game.id,
+      'playerId': flow.currentUser.id,
+      'card': card.toJson()
+    });
   }
 }

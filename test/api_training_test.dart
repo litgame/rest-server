@@ -72,4 +72,65 @@ void main() async {
 
     game.stop();
   });
+
+  test("Training skip turn test", () async {
+    final game = await startTrainingWithThreePlayers();
+
+    var response = await testRequest('PUT', '/api/game/training/next',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-2',
+        }.toJson());
+
+    expect(response.statusCode, equals(500),
+        reason: await response.readAsString());
+
+    response = await testRequest('PUT', '/api/game/training/next',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
+    expect(game.trainingFlow?.currentUser.id, 'testUser-1');
+
+    response = await testRequest('PUT', '/api/game/training/next',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
+    expect(game.trainingFlow?.currentUser.id, 'testUser-2');
+
+    response = await testRequest('PUT', '/api/game/training/skip',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-3',
+        }.toJson());
+    expect(response.statusCode, equals(500),
+        reason: await response.readAsString());
+
+    response = await testRequest('PUT', '/api/game/training/skip',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-1',
+        }.toJson());
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
+    expect(game.trainingFlow?.currentUser.id, 'testUser-3');
+
+    response = await testRequest('PUT', '/api/game/training/skip',
+        body: {
+          'gameId': game.id,
+          'triggeredBy': 'testUser-2',
+        }.toJson());
+    expect(response.statusCode, equals(200),
+        reason: await response.readAsString());
+    expect(game.trainingFlow?.currentUser.id, 'testUser-1');
+
+    game.stop();
+  });
 }
