@@ -148,7 +148,9 @@ void main() async {
   test('check if nextTurn worked when kick during game', () async {
     final game = await startTrainingWithThreePlayers();
 
-    game.trainingFlow?..nextTurn()..nextTurn(); //testUser-3 turn;
+    game.trainingFlow
+      ?..nextTurn()
+      ..nextTurn(); //testUser-3 turn;
 
     // kick testUser-3
     var response = await testRequest('PUT', '/api/game/kick',
@@ -352,6 +354,19 @@ void main() async {
         reason: await response.readAsString());
 
     expect(game.playersSorted.length, 0);
+    game.stop();
+  });
+
+  test("findGameOfPlayer test", () async {
+    final game = await startTrainingWithThreePlayers();
+
+    var response = await testRequest('PUT', '/api/game/findGameOfPlayer',
+        body: {'playerId': 'testUser-1'}.toJson());
+
+    expect(response.statusCode, equals(200));
+    final expected = {'gameId': 'test-123'}.toJson();
+    var actual = await response.readAsString();
+    expect(actual, expected);
     game.stop();
   });
 }

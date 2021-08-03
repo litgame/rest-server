@@ -29,6 +29,7 @@ class ApiMainService implements RestService {
 
     router.get('/list', _list);
     router.get('/info', _get);
+    router.put('/findGameOfPlayer', _findGameOfPlayer);
 
     router.mount('/training/', ApiTrainingService().router);
     router.mount('/game/', ApiGameService().router);
@@ -225,5 +226,24 @@ class ApiMainService implements RestService {
       return ErrorNotFoundResponse('Game not found!');
     }
     return SuccessResponse(game.toJson());
+  }
+
+  Future<Response> _findGameOfPlayer(Request request) async {
+    final validator = JsonBodyValidator(request, {
+      'playerId': (value, _) =>
+          value.toString().isNotEmpty ? null : "player is not specified!"
+    });
+
+    final error = await validator.validate();
+    if (error != null) {
+      return error;
+    }
+    final gameOfPlayer =
+        LitGame.findGameOfPlayer(validator.validated['playerId']);
+    if (gameOfPlayer == null) {
+      return SuccessResponse({'gameId': ''});
+    }
+
+    return SuccessResponse({'gameId': gameOfPlayer.id});
   }
 }
