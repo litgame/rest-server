@@ -84,7 +84,6 @@ class ApiGameService implements RestService {
     return SuccessResponse({
       'gameId': validator.game.id,
       'playerId': validator.triggeredBy,
-      // ignore: invalid_use_of_protected_member
       'card': card.toJson(),
       'flowState': 'storyTell'
     });
@@ -120,7 +119,7 @@ class ApiGameService implements RestService {
     }
 
     error = validator
-        .checkIfMasterOrAdmin('Only admin or master can slip a player\'s turn');
+        .checkIfMasterOrAdmin('Only admin or master can skip player\'s turn');
     if (error != null) {
       return error;
     }
