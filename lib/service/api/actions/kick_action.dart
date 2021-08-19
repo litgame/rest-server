@@ -36,16 +36,31 @@ class KickAction implements Action {
         return SuccessResponse({'userId': targetUserId, 'removed': true});
       }
     } else {
+      /// kick self, admin
       if (game.admin.id == targetUserId) {
+        final response = {
+          'userId': targetUserId,
+          'removed': true,
+          'newAdmin': newAdminId
+        };
         final fail = await _setNewAdmin();
         if (fail != null) {
           return fail;
         }
+
+        /// if admin also is master
+        if (game.master.id == targetUserId) {
+          final fail = await _setNewMaster();
+          if (fail != null) {
+            return fail;
+          }
+          response['newMaster'] = newMasterId;
+        }
         game.removePlayer(LitUser(targetUserId));
-        return SuccessResponse(
-            {'userId': targetUserId, 'removed': true, 'newAdmin': newAdminId});
-      }
-      if (game.master.id == targetUserId) {
+        return SuccessResponse(response);
+
+        ///kick self, only master
+      } else if (game.master.id == targetUserId) {
         final fail = await _setNewMaster();
         if (fail != null) {
           return fail;
@@ -56,13 +71,15 @@ class KickAction implements Action {
           'removed': true,
           'newMaster': newMasterId
         });
-      }
 
-      game.removePlayer(LitUser(targetUserId));
-      return SuccessResponse({
-        'userId': targetUserId,
-        'removed': true,
-      });
+        /// kick self, ordinary user
+      } else {
+        game.removePlayer(LitUser(targetUserId));
+        return SuccessResponse({
+          'userId': targetUserId,
+          'removed': true,
+        });
+      }
     }
   }
 

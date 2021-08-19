@@ -142,6 +142,31 @@ void main() async {
         }.toJson());
 
     expect(response.statusCode, equals(200));
+
+    game.addPlayer(LitUser('testUser-2'));
+    response = await testRequest('PUT', '/api/game/kick',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-1',
+          'newMasterId': 'testUser-3'
+        }.toJson());
+
+    expect(response.statusCode, equals(500));
+
+    response = await testRequest('PUT', '/api/game/kick',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-1',
+          'newMasterId': 'testUser-3',
+          'newAdminId': 'testUser-2'
+        }.toJson());
+
+    expect(response.statusCode, equals(200));
+    expect(game.master.id, 'testUser-3');
+    expect(game.admin.id, 'testUser-2');
+
     game.stop();
   });
 
