@@ -162,9 +162,15 @@ class LitGame {
   void removePlayer(LitUser user) {
     _players.remove(user.id);
     if (playersSorted.isNotEmpty) {
-      final player =
-          playersSorted.firstWhere((element) => element.user.id == user.id);
-      playersSorted.remove(player);
+      try {
+        final player =
+            playersSorted.firstWhere((element) => element.user.id == user.id);
+        playersSorted.remove(player);
+      } catch (e) {
+        print(e);
+        print(user);
+        print(user.id);
+      }
     }
   }
 

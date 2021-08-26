@@ -135,17 +135,6 @@ class KickAction implements Action {
         }
         body['newMaster'] = newMasterId as String;
       }
-      if (game.state == GameState.training &&
-          game.trainingFlow?.currentUser.id == targetUserId) {
-        game.trainingFlow?.nextTurn();
-        body['nextTurnByUserId'] =
-            game.trainingFlow?.currentUser.id.toString() as String;
-      } else if (game.state == GameState.game &&
-          game.gameFlow?.currentUser.id == targetUserId) {
-        body['nextTurnByUserId'] =
-            game.gameFlow?.currentUser.id.toString() as String;
-        game.gameFlow?.nextTurn();
-      }
 
       game.removePlayer(LitUser(targetUserId));
       return SuccessResponse(body);

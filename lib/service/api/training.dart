@@ -105,7 +105,7 @@ class ApiTrainingService implements RestService {
     }
 
     error = validator
-        .checkIfMasterOrAdmin('Only admin or master can slip a player\'s turn');
+        .checkIfMasterOrAdmin('Only admin or master can skip a player\'s turn');
     if (error != null) {
       return error;
     }

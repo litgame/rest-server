@@ -170,27 +170,6 @@ void main() async {
     game.stop();
   });
 
-  test('check if nextTurn worked when kick during game', () async {
-    final game = await startTrainingWithThreePlayers();
-
-    game.trainingFlow
-      ?..nextTurn()
-      ..nextTurn(); //testUser-3 turn;
-
-    // kick testUser-3
-    var response = await testRequest('PUT', '/api/game/kick',
-        body: {
-          'gameId': game.id,
-          'triggeredBy': 'testUser-1',
-          'targetUserId': 'testUser-3'
-        }.toJson());
-
-    expect(response.statusCode, equals(200));
-    expect(game.players.length, 2);
-    expect(game.trainingFlow?.currentUser.id, 'testUser-1');
-    game.stop();
-  });
-
   test('finish join stage of game', () async {
     final game = LitGame.startNew('test-123');
     final user1 = LitUser('testUser-1', isAdmin: true);
