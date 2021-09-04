@@ -38,6 +38,11 @@ class ApiTrainingService implements RestService {
           'Cant start training at state ${validator.game.state.toString()}');
     }
 
+    if (validator.game.players.length != validator.game.playersSorted.length) {
+      return ErrorResponse(
+          'Only ${validator.game.playersSorted.length} of total ${validator.game.players.length} were sorted ');
+    }
+
     var collectionName = validator.validated['collectionName'];
     if (collectionName == null) {
       collectionName = 'default';
