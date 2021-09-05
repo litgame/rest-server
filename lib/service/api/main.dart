@@ -110,6 +110,33 @@ class ApiMainService implements RestService {
         return ErrorResponse(
             "Can't add user ${validator.triggeredBy}: probably already playing");
       }
+    } else if (game.state == GameState.training ||
+        game.state == GameState.game) {
+      final targetId = validator.validated['targetUserId'];
+      if (targetId == null)
+        return ErrorResponse("Can't join player: targetId did not provided");
+      int? targetPosition;
+      try {
+        targetPosition = int.parse(validator.validated['position']);
+      } catch (_) {
+        return ErrorResponse("Can't join player: position did not provided");
+      }
+
+      final error = validator.checkIfMasterOrAdmin(
+          'Only master or admin can add new players during game');
+      if (error != null) return error;
+
+      final newPlayer = LitUser(targetId);
+      game.addPlayer(newPlayer);
+      final sortPosition = SortAction.sort(newPlayer, targetPosition, game);
+      if (sortPosition < 0) {
+        return ErrorResponse('Unknown error during sorting');
+      }
+
+      return SuccessResponse({
+        'gameId': validator.game.id,
+        'playerPosition': sortPosition,
+      });
     } else {
       return ErrorResponse("Can't join player in game state ${game.state}");
     }

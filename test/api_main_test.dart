@@ -54,6 +54,72 @@ void main() async {
     game.stop();
   });
 
+  test("/join test while game training", () async {
+    final game = await startTrainingWithThreePlayers();
+
+    var response = await testRequest('PUT', '/api/game/join',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-3',
+          'targetUserId': 'testUser-4'
+        }.toJson());
+
+    expect(response.statusCode, equals(500));
+
+    response = await testRequest('PUT', '/api/game/join',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-4',
+          'position': '99'
+        }.toJson());
+
+    expect(game.players.length, 4);
+    var actual = await response.readAsString();
+    expect(
+        actual,
+        {
+          'gameId': 'test-123',
+          'playerPosition': 3,
+        }.toJson());
+
+    response = await testRequest('PUT', '/api/game/join',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-5',
+          'position': '0'
+        }.toJson());
+
+    expect(game.players.length, 5);
+    actual = await response.readAsString();
+    expect(
+        actual,
+        {
+          'gameId': 'test-123',
+          'playerPosition': 0,
+        }.toJson());
+
+    response = await testRequest('PUT', '/api/game/join',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-2',
+          'targetUserId': 'testUser-6',
+          'position': '2'
+        }.toJson());
+
+    expect(game.players.length, 6);
+    actual = await response.readAsString();
+    expect(
+        actual,
+        {
+          'gameId': 'test-123',
+          'playerPosition': 2,
+        }.toJson());
+
+    game.stop();
+  });
+
   test("/kick test while joining to game", () async {
     final game = LitGame.startNew('test-123');
     game.addPlayer(LitUser('testUser-1', isAdmin: true));

@@ -35,11 +35,11 @@ class SortAction implements Action {
       return SuccessResponse(
           {'gameId': validator.game.id, 'playerPosition': 0});
     } else {
-      return _sort();
+      return _processSortRequest();
     }
   }
 
-  Future<Response> _sort() async {
+  Response _processSortRequest() {
     final validator2 = validator as TargetUserValidator;
 
     final playerToSort = validator.game.players[validator2.targetUserId];
@@ -48,46 +48,46 @@ class SortAction implements Action {
           'Player ${validator2.targetUserId} not found in game');
     }
     final position = int.parse(validator.validated['position'].toString());
-    final playersSorted = validator.game.playersSorted;
+    final sortPosition = sort(playerToSort, position, validator.game);
+    if (sortPosition < 0) {
+      return ErrorResponse('Unknown error during sorting');
+    }
+
+    return SuccessResponse({
+      'gameId': validator.game.id,
+      'playerPosition': sortPosition,
+    });
+  }
+
+  static int sort(LitUser playerToSort, int position, LitGame game) {
+    final playersSorted = game.playersSorted;
     if (playersSorted.length == 0) {
       playersSorted.add(LinkedUser(playerToSort));
-      return SuccessResponse({
-        'gameId': validator.game.id,
-        'playerPosition': 0,
-      });
+      return 0;
     } else {
       try {
-        final existing = playersSorted.firstWhere(
-            (element) => element.user.id == validator2.targetUserId);
+        final existing = playersSorted
+            .firstWhere((element) => element.user.id == playerToSort.id);
         existing.unlink();
       } catch (_) {}
 
       if (position < 0) {
         playersSorted.addFirst(LinkedUser(playerToSort));
-        return SuccessResponse({
-          'gameId': validator.game.id,
-          'playerPosition': 0,
-        });
+        return 0;
       } else if (position >= playersSorted.length) {
         playersSorted.add(LinkedUser(playerToSort));
-        return SuccessResponse({
-          'gameId': validator.game.id,
-          'playerPosition': playersSorted.length - 1,
-        });
+        return playersSorted.length - 1;
       } else {
         var counter = 0;
         for (var sorted in playersSorted) {
           if (counter == position) {
             sorted.insertBefore(LinkedUser(playerToSort));
-            return SuccessResponse({
-              'gameId': validator.game.id,
-              'playerPosition': position,
-            });
+            return position;
           }
           counter++;
         }
       }
     }
-    return ErrorResponse('Unknown error during sorting');
+    return -1;
   }
 }
