@@ -80,6 +80,8 @@ void main() async {
         actual,
         {
           'gameId': 'test-123',
+          'userId': 'testUser-4',
+          'joined': true,
           'playerPosition': 3,
         }.toJson());
 
@@ -97,6 +99,8 @@ void main() async {
         actual,
         {
           'gameId': 'test-123',
+          'userId': 'testUser-5',
+          'joined': true,
           'playerPosition': 0,
         }.toJson());
 
@@ -114,6 +118,8 @@ void main() async {
         actual,
         {
           'gameId': 'test-123',
+          'userId': 'testUser-6',
+          'joined': true,
           'playerPosition': 2,
         }.toJson());
 
