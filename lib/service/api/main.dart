@@ -135,6 +135,8 @@ class ApiMainService implements RestService {
 
       return SuccessResponse({
         'gameId': validator.game.id,
+        'userId': targetId,
+        'joined': true,
         'playerPosition': sortPosition,
       });
     } else {
