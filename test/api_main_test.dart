@@ -242,6 +242,46 @@ void main() async {
     game.stop();
   });
 
+  test("/kick test admin is master", () async {
+    final game = LitGame.startNew('test-123');
+    final user1 = LitUser('testUser-1', isAdmin: true, isGameMaster: true);
+    final user2 = LitUser('testUser-2');
+    final user3 = LitUser('testUser-3');
+    game.addPlayer(user1);
+    game.addPlayer(user2);
+    game.addPlayer(user3);
+    game.startSorting();
+    game.playersSorted.add(LinkedUser(user1));
+    game.playersSorted.add(LinkedUser(user2));
+    game.playersSorted.add(LinkedUser(user3));
+    game.startTraining(cards: testCollection());
+    await game.gameFlow?.init;
+
+    final response = await testRequest('PUT', '/api/game/kick',
+        body: {
+          'gameId': 'test-123',
+          'triggeredBy': 'testUser-1',
+          'targetUserId': 'testUser-1',
+          'newMasterId': 'testUser-3',
+          'newAdminId': 'testUser-3'
+        }.toJson());
+
+    expect(response.statusCode, equals(200));
+
+    expect(
+        await response.readAsString(),
+        {
+          'userId': 'testUser-1',
+          'removed': true,
+          'newAdmin': 'testUser-3',
+          'newMaster': 'testUser-3'
+        }.toJson());
+    expect(game.master.id, 'testUser-3');
+    expect(game.admin.id, 'testUser-3');
+
+    game.stop();
+  });
+
   test('finish join stage of game', () async {
     final game = LitGame.startNew('test-123');
     final user1 = LitUser('testUser-1', isAdmin: true);
