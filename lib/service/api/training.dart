@@ -1,6 +1,7 @@
 import 'package:litgame_server/models/game/game.dart';
 import 'package:litgame_server/service/api/validators/triggered_by.dart';
 import 'package:litgame_server/service/helpers.dart';
+import 'package:litgame_server/service/logger.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/src/router.dart';
 
@@ -127,4 +128,7 @@ class ApiTrainingService implements RestService {
       'card': card.toJson()
     });
   }
+
+  @override
+  LoggerInterface get logger => ConsoleLogger();
 }

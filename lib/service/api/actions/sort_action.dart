@@ -3,12 +3,13 @@ import 'package:litgame_server/models/game/user.dart';
 import 'package:litgame_server/service/api/actions/core.dart';
 import 'package:litgame_server/service/api/validators/target_user.dart';
 import 'package:litgame_server/service/api/validators/triggered_by.dart';
+import 'package:litgame_server/service/logger.dart';
 import 'package:shelf/src/response.dart';
 
 import '../../helpers.dart';
 
-class SortAction implements Action {
-  SortAction(this.validator);
+class SortAction extends Action {
+  SortAction(this.validator, LoggerInterface logger) : super(logger);
 
   TriggeredByValidator validator;
 
@@ -90,4 +91,7 @@ class SortAction implements Action {
     }
     return -1;
   }
+
+  @override
+  LoggerInterface get logger => ConsoleLogger();
 }

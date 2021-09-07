@@ -1,12 +1,15 @@
 import 'package:litgame_server/models/game/game.dart';
 import 'package:litgame_server/models/game/user.dart';
 import 'package:litgame_server/service/api/actions/core.dart';
+import 'package:litgame_server/service/logger.dart';
 import 'package:shelf/shelf.dart';
 
 import '../../helpers.dart';
 
-class KickAction implements Action {
-  KickAction(this.game, this.triggeredBy, this.targetUserId, this.jsonRequest);
+class KickAction extends Action {
+  KickAction(this.game, this.triggeredBy, this.targetUserId, this.jsonRequest,
+      LoggerInterface logger)
+      : super(logger);
 
   final LitGame game;
   final String triggeredBy;
@@ -27,6 +30,11 @@ class KickAction implements Action {
   }
 
   Future<Response> _kickSelf() async {
+    logger.beginSection();
+    logger.log('KICK request: ' + jsonRequest.toString());
+    logger.log('Current master: ' + game.master.id);
+    logger.log('Current admin: ' + game.admin.id);
+    logger.endSection();
     if (game.state == GameState.join) {
       if (game.admin.id == targetUserId) {
         game.stop();
@@ -57,6 +65,8 @@ class KickAction implements Action {
           response['newMaster'] = newMasterId;
         }
         game.removePlayer(LitUser(targetUserId));
+
+        logger.log('Response: ' + response.toJson());
         return SuccessResponse(response);
 
         ///kick self, only master
@@ -66,19 +76,23 @@ class KickAction implements Action {
           return fail;
         }
         game.removePlayer(LitUser(targetUserId));
-        return SuccessResponse({
+        final response = {
           'userId': targetUserId,
           'removed': true,
           'newMaster': newMasterId
-        });
+        };
+        logger.log('Response: ' + response.toJson());
+        return SuccessResponse(response);
 
         /// kick self, ordinary user
       } else {
         game.removePlayer(LitUser(targetUserId));
-        return SuccessResponse({
+        final response = {
           'userId': targetUserId,
           'removed': true,
-        });
+        };
+        logger.log('Response: ' + response.toJson());
+        return SuccessResponse(response);
       }
     }
   }

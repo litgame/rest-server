@@ -3,6 +3,7 @@ import 'package:litgame_server/models/game/user.dart';
 import 'package:litgame_server/service/api/actions/kick_action.dart';
 import 'package:litgame_server/service/api/actions/sort_action.dart';
 import 'package:litgame_server/service/api/training.dart';
+import 'package:litgame_server/service/logger.dart';
 import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -155,7 +156,7 @@ class ApiMainService implements RestService {
     final game = validator.game;
     final targetUserId = validator.targetUserId.toString();
     final action = KickAction(
-        game, validator.triggeredBy, targetUserId, validator.validated);
+        game, validator.triggeredBy, targetUserId, validator.validated, logger);
     return action.run();
   }
 
@@ -223,13 +224,13 @@ class ApiMainService implements RestService {
       }
     });
 
-    final action = SortAction(validator);
+    final action = SortAction(validator, logger);
     return action.run();
   }
 
   Future<Response> _sortReset(Request request) async {
     final validator = TriggeredByValidator(request, {});
-    final action = SortAction(validator);
+    final action = SortAction(validator, logger);
     return action.run(reset: true);
   }
 
@@ -275,4 +276,7 @@ class ApiMainService implements RestService {
 
     return SuccessResponse({'gameId': gameOfPlayer.id});
   }
+
+  @override
+  LoggerInterface get logger => ConsoleLogger();
 }

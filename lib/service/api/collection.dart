@@ -1,5 +1,6 @@
 import 'package:litgame_server/models/cards/card_collection.dart';
 import 'package:litgame_server/service/helpers.dart';
+import 'package:litgame_server/service/logger.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/src/router.dart';
 
@@ -46,4 +47,7 @@ class ApiCollectionService implements RestService {
       return SuccessResponse({'collections': [], 'total': 0});
     }
   }
+
+  @override
+  LoggerInterface get logger => ConsoleLogger();
 }
