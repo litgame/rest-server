@@ -30,11 +30,6 @@ class KickAction extends Action {
   }
 
   Future<Response> _kickSelf() async {
-    logger.beginSection();
-    logger.log('KICK request: ' + jsonRequest.toString());
-    logger.log('Current master: ' + game.master.id);
-    logger.log('Current admin: ' + game.admin.id);
-    logger.endSection();
     if (game.state == GameState.join) {
       if (game.admin.id == targetUserId) {
         game.stop();
@@ -66,7 +61,6 @@ class KickAction extends Action {
         }
         game.removePlayer(LitUser(targetUserId));
 
-        logger.log('Response: ' + response.toJson());
         return SuccessResponse(response);
 
         ///kick self, only master
@@ -81,7 +75,6 @@ class KickAction extends Action {
           'removed': true,
           'newMaster': newMasterId
         };
-        logger.log('Response: ' + response.toJson());
         return SuccessResponse(response);
 
         /// kick self, ordinary user
@@ -91,7 +84,6 @@ class KickAction extends Action {
           'userId': targetUserId,
           'removed': true,
         };
-        logger.log('Response: ' + response.toJson());
         return SuccessResponse(response);
       }
     }

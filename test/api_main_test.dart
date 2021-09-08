@@ -146,7 +146,8 @@ void main() async {
         body: {
           'gameId': 'test-123',
           'triggeredBy': 'testUser-1',
-          'targetUserId': 'testUser-2'
+          'targetUserId': 'testUser-2',
+          'newMasterId': 'testUser-1',
         }.toJson());
 
     expect(response.statusCode, equals(200));
