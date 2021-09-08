@@ -79,7 +79,7 @@ class LitGame {
 
   bool startSorting() {
     if (_state != GameState.join) return false;
-    if (players.length < 2) return false;
+    if (players.length < 1) return false;
     _state = GameState.sorting;
     return true;
   }
