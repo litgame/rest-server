@@ -288,18 +288,7 @@ void main() async {
     final user1 = LitUser('testUser-1', isAdmin: true);
     game.addPlayer(user1);
 
-    var response = await testRequest('PUT', '/api/game/finishJoin',
-        body: {
-          'gameId': game.id,
-          'triggeredBy': 'testUser-1',
-        }.toJson());
-
-    expect(response.statusCode, equals(500));
-
-    final user2 = LitUser('testUser-2', isGameMaster: true);
-    game.addPlayer(user2);
-
-    response = await testRequest('PUT', '/api/game/finishJoin',
+    final response = await testRequest('PUT', '/api/game/finishJoin',
         body: {
           'gameId': game.id,
           'triggeredBy': 'testUser-1',
