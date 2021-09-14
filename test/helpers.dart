@@ -1,21 +1,12 @@
 import 'package:litgame_server/models/cards/card.dart';
 import 'package:litgame_server/models/game/game.dart';
 import 'package:litgame_server/models/game/user.dart';
-import 'package:litgame_server/service/helpers.dart';
-import 'package:litgame_server/service/service.dart';
+import 'package:litgame_server/service/serverless.dart';
 import 'package:shelf/shelf.dart';
 
-Uri testUri(String uri) => Uri.parse('http://rest-server:8042$uri');
-
 Future<Response> testRequest(String method, String uri, {String? body}) async {
-  final service = LitGameRestService();
-  await service.init;
-  final handler = service.handler;
-  if (method.toUpperCase() != 'GET' && body != null) {
-    return await handler(
-        Request(method, testUri(uri), body: body, headers: jsonHttpHeader));
-  }
-  return await handler(Request(method, testUri(uri)));
+  final service = ServerlessService();
+  return service.request(method, uri, body: body);
 }
 
 Card testCard(String name, CardType type) =>
