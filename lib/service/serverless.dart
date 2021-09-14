@@ -3,15 +3,19 @@ import 'package:shelf/shelf.dart';
 
 import 'helpers.dart';
 
-class ServerlessService extends LitGameRestService {
+class ServerlessService {
+  ServerlessService(this.service);
+
+  final LitGameRestService service;
+
   Uri fakeUri(String uri) => Uri.parse('http://rest-server:8042$uri');
 
   Future<Response> request(String method, String uri, {String? body}) async {
-    await init;
+    await service.init;
     if (method.toUpperCase() != 'GET' && body != null) {
-      return await handler(
+      return await service.handler(
           Request(method, fakeUri(uri), body: body, headers: jsonHttpHeader));
     }
-    return await handler(Request(method, fakeUri(uri)));
+    return await service.handler(Request(method, fakeUri(uri)));
   }
 }

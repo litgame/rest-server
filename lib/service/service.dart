@@ -75,6 +75,29 @@ class LitGameRestService {
     }
   }
 
+  LitGameRestService.manual(String parseServerUrl, String parseServerAppKey,
+      String parseServerMasterKey, String parseServerRestKey) {
+    init = Parse().initialize(
+      parseServerAppKey,
+      parseServerUrl,
+      debug: false,
+      masterKey: parseServerMasterKey,
+      clientKey: parseServerRestKey,
+      registeredSubClassMap: <String, ParseObjectConstructor>{
+        'Card': () => Card.clone(),
+        'CardCollection': () => CardCollection.clone(),
+      },
+      // to prevent automatic detection
+      fileDirectory: 'someDirectory',
+      // to prevent automatic detection
+      appName: 'appName',
+      // to prevent automatic detection
+      appPackageName: 'somePackageName',
+      // to prevent automatic detection
+      appVersion: 'someAppVersion',
+    );
+  }
+
   late final Future init;
 
   Handler get handler {
