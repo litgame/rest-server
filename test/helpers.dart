@@ -2,10 +2,11 @@ import 'package:litgame_server/models/cards/card.dart';
 import 'package:litgame_server/models/game/game.dart';
 import 'package:litgame_server/models/game/user.dart';
 import 'package:litgame_server/service/serverless.dart';
+import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 
 Future<Response> testRequest(String method, String uri, {String? body}) async {
-  final service = ServerlessService();
+  final service = ServerlessService(LitGameRestService());
   return service.request(method, uri, body: body);
 }
 
