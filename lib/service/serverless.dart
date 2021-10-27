@@ -1,3 +1,5 @@
+import 'package:litgame_server/models/cards/card.dart';
+import 'package:litgame_server/models/game/game.dart';
 import 'package:litgame_server/service/service.dart';
 import 'package:shelf/shelf.dart';
 
@@ -7,6 +9,10 @@ class ServerlessService {
   ServerlessService(this.service);
 
   final LitGameRestService service;
+
+  set cards(Map<String, List<Card>>? value) {
+    LitGame.setOfflineCards(value);
+  }
 
   Uri fakeUri(String uri) => Uri.parse('http://rest-server:8042$uri');
 

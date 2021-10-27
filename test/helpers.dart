@@ -46,7 +46,8 @@ Future<LitGame> startTrainingWithThreePlayers([bool start = true]) async {
   game.playersSorted.add(LinkedUser(user2));
   game.playersSorted.add(LinkedUser(user3));
   if (start) {
-    game.startTraining(cards: testCollection());
+    LitGame.setOfflineCards(testCollection());
+    game.startTraining();
     await game.gameFlow?.init;
   }
   return game;

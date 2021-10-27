@@ -30,6 +30,16 @@ class LitGame {
 
   bool get isEmpty => id == -1;
 
+  static Map<String, List<Card>>? _offlineCards;
+
+  static setOfflineCards(Map<String, List<Card>>? value) {
+    if (value == null)
+      _offlineCards = value;
+    else {
+      _offlineCards = Map.of(value);
+    }
+  }
+
   LitUser get master {
     for (var u in _players.values) {
       if (u.isGameMaster) return u;
@@ -93,6 +103,7 @@ class LitGame {
       if (_state != GameState.sorting) {
         return null;
       }
+      cards ??= _offlineCards;
       if (cards == null) {
         if (collectionId != null) {
           _gameFlow = GameFlow.init(this, collectionId: collectionId);
