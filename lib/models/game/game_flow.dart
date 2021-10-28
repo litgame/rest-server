@@ -40,7 +40,7 @@ class GameFlow implements FlowInterface {
             GameFlow.serverCollection(game, collectionName: collectionName);
       }
     } else {
-      flow ??= GameFlow.staticCollection(game, cards);
+      flow ??= GameFlow.staticCollection(game, cards, collectionName);
     }
     _runningGames[game.id] = flow;
     return flow;
@@ -63,7 +63,8 @@ class GameFlow implements FlowInterface {
     });
   }
 
-  GameFlow.staticCollection(this.game, this.cards) : collectionName = '' {
+  GameFlow.staticCollection(this.game, this.cards, [String? collectionName])
+      : this.collectionName = collectionName ?? '' {
     _user = game.playersSorted.first;
     init = Future.value(null);
   }

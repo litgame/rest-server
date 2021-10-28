@@ -111,7 +111,8 @@ class LitGame {
           _gameFlow = GameFlow.init(this, collectionName: collectionName);
         }
       } else {
-        _gameFlow = GameFlow.init(this, cards: cards);
+        _gameFlow =
+            GameFlow.init(this, cards: cards, collectionName: collectionName);
       }
       _trainingFlow = TrainingFlow.init(_gameFlow as GameFlow);
       _state = GameState.training;
