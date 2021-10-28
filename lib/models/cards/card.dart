@@ -53,7 +53,7 @@ class Card extends ParseObject implements ParseCloneable {
       }
       return url;
     } catch (_) {
-      return '';
+      return this['imgUrl'] ?? '';
     }
   }
 
