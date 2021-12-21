@@ -63,9 +63,16 @@ class GameFlow implements FlowInterface {
     });
   }
 
-  GameFlow.staticCollection(this.game, this.cards, [String? collectionName])
-      : this.collectionName = collectionName ?? '' {
+  GameFlow.staticCollection(this.game, Map<String, List<Card>> staticCards,
+      [String? colName])
+      : this.collectionName = colName ?? 'internal-offline' {
     _user = game.playersSorted.first;
+    final offlineCollection = CardCollection(collectionName);
+    offlineCollection.cards.addAll(Map.from(staticCards));
+    _loadedCollections[collectionName] = offlineCollection;
+    _collection?.cards.forEach((key, value) {
+      cards[key] = List.from(value);
+    });
     init = Future.value(null);
   }
 
