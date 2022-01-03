@@ -71,7 +71,7 @@ class GameFlow implements FlowInterface {
     offlineCollection.cards.addAll(Map.from(staticCards));
     _loadedCollections[collectionName] = offlineCollection;
     _collection?.cards.forEach((key, value) {
-      cards[key] = List.from(value);
+      cards[key] = List.from(value)..shuffle();
     });
     init = Future.value(null);
   }
