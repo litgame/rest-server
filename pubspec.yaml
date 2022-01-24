@@ -10,7 +10,10 @@ dependencies:
   meta: ^1.7.0
   shelf: ^1.2.0
   shelf_router: ^1.1.1
-  parse_server_sdk: ^3.1.0
+  parse_server_sdk:
+    git:
+      url: https://github.com/litgame/Parse-SDK-Flutter.git
+      path: packages/dart
   archive: ^3.1.2
   file: ^6.1.2
   args: ^2.2.0
