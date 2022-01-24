@@ -76,7 +76,7 @@ class LitGameRestService {
   }
 
   LitGameRestService.manual(String parseServerUrl, String parseServerAppKey,
-      String parseServerMasterKey, String parseServerRestKey) {
+      String? parseServerMasterKey, String parseServerRestKey) {
     init = Parse().initialize(
       parseServerAppKey,
       parseServerUrl,
