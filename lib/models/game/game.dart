@@ -82,8 +82,10 @@ class LitGame {
       throw 'Game $id does not exists. Cant stop it!';
     }
     _activeGames.remove(id);
-    TrainingFlow.stopGame(id);
-    GameFlow.stopGame(id);
+    _trainingFlow?.stop();
+    _trainingFlow = null;
+    _gameFlow?.stop();
+    _gameFlow = null;
     _state = GameState.stop;
   }
 

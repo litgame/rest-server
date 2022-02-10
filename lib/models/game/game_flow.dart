@@ -12,12 +12,17 @@ class GameFlow implements FlowInterface {
   static final Map<String, GameFlow> _runningGames = {};
   static final Map<String, CardCollection> _loadedCollections = {};
 
-  final LitGame game;
+  LitGame? _game;
   final String collectionName;
   late final Future init;
   Map<String, List<Card>> cards = {};
 
   CardCollection? get _collection => _loadedCollections[collectionName];
+
+  LitGame get game {
+    if (_game == null) throw 'no game in flow!';
+    return _game!;
+  }
 
   String get collectionId => _loadedCollections[collectionName]?.objectId ?? '';
 
@@ -46,8 +51,9 @@ class GameFlow implements FlowInterface {
     return flow;
   }
 
-  GameFlow.serverCollection(this.game,
+  GameFlow.serverCollection(LitGame game,
       {this.collectionName = '', String? collectionId}) {
+    _game = game;
     _user = game.playersSorted.first;
 
     if (collectionId != null) {
@@ -63,9 +69,10 @@ class GameFlow implements FlowInterface {
     });
   }
 
-  GameFlow.staticCollection(this.game, Map<String, List<Card>> staticCards,
+  GameFlow.staticCollection(LitGame game, Map<String, List<Card>> staticCards,
       [String? colName])
       : this.collectionName = colName ?? 'internal-offline' {
+    _game = game;
     _user = game.playersSorted.first;
     final offlineCollection = CardCollection(collectionName);
     offlineCollection.cards.addAll(Map.from(staticCards));
@@ -76,10 +83,11 @@ class GameFlow implements FlowInterface {
     init = Future.value(null);
   }
 
-  static void stopGame(String gameId) {
-    if (_runningGames[gameId] != null) {
-      _runningGames.remove(gameId);
+  void stop() {
+    if (_runningGames[game.id] != null) {
+      _runningGames.remove(game.id);
     }
+    _game = null;
   }
 
   @override

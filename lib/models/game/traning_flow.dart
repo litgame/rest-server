@@ -8,14 +8,22 @@ import 'user.dart';
 class TrainingFlow implements FlowInterface {
   static final Map<String, TrainingFlow> _runningTrainings = {};
 
-  TrainingFlow(this.gameFlow) {
+  TrainingFlow(GameFlow gameFlow) {
+    _gameFlow = gameFlow;
     gameFlow.init.then((value) {
       _user = gameFlow.game.playersSorted.first;
       _prepareCards();
     });
   }
 
-  final GameFlow gameFlow;
+  GameFlow get gameFlow {
+    if (_gameFlow == null) {
+      throw 'No gameFlow in training flow!';
+    }
+    return _gameFlow!;
+  }
+
+  GameFlow? _gameFlow;
   late LinkedUser _user;
   int turnNumber = 1;
   late List<Card> cards;
@@ -38,10 +46,11 @@ class TrainingFlow implements FlowInterface {
     cards.shuffle(Random(cards.length));
   }
 
-  static void stopGame(String gameId) {
-    if (_runningTrainings[gameId] != null) {
-      _runningTrainings.remove(gameId);
+  void stop() {
+    if (_runningTrainings[gameFlow.game.id] != null) {
+      _runningTrainings.remove(gameFlow.game.id);
     }
+    _gameFlow = null;
   }
 
   @override
